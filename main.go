@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/hrntknr/tendermint-test/app"
 	"github.com/tendermint/abci/server"
@@ -25,16 +26,12 @@ func main() {
 	}
 	defer srv.Stop()
 
-	_app.DeliverTx([]byte("tx1"))
-	_app.DeliverTx([]byte("tx2"))
-	_app.DeliverTx([]byte("tx3"))
-	_app.Commit()
-	res := _app.Query(types.RequestQuery{Path: "storage"})
-	fmt.Println(string(res.Value))
-
-	_app.DeliverTx([]byte("tx4"))
-	res = _app.Query(types.RequestQuery{Path: "storage"})
-	fmt.Println(string(res.Value))
-	_app.Commit()
-	fmt.Scanln()
+	for {
+		time.Sleep(10 * time.Second)
+		_app.DeliverTx([]byte(time.Now().String()))
+		_app.Commit()
+		res := _app.Query(types.RequestQuery{Path: "storage"})
+		fmt.Printf("%s\n", string(res.Value))
+		fmt.Printf("%d\n", res.Height)
+	}
 }
