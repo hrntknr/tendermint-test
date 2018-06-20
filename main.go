@@ -1,13 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"os"
-	"time"
 
 	"github.com/hrntknr/tendermint-test/app"
 	"github.com/tendermint/abci/server"
-	"github.com/tendermint/abci/types"
 	"github.com/tendermint/tmlibs/log"
 )
 
@@ -25,13 +22,5 @@ func main() {
 		panic(err)
 	}
 	defer srv.Stop()
-
-	for {
-		time.Sleep(10 * time.Second)
-		_app.DeliverTx([]byte(time.Now().String()))
-		_app.Commit()
-		res := _app.Query(types.RequestQuery{Path: "storage"})
-		fmt.Printf("%s\n", string(res.Value))
-		fmt.Printf("%d\n", res.Height)
-	}
+	select {}
 }
